@@ -1,0 +1,12 @@
+#!/bin/sh
+#PBS -l nodes=2:ppn=16
+#PBS -N MY_TEST_JOB
+echo Running on host `hostname`
+echo Time is `date`
+echo This job runs on the following processors:
+echo `cat $PBS_NODEFILE`
+NPROCS=`wc -l < $PBS_NODEFILE`
+echo Process has been allocated $NPROCS slots
+echo Working directory is $PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
+mpirun -r ssh -machinefile $PBS_NODEFILE -np $NPROCS >  f.out
