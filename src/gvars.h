@@ -19,8 +19,8 @@
 #ifndef _GVARS_
 #define _GVARS_
 
-#define		NX				512			/**< X Dimension in real space. Must be multiples of NPROC when using MPI.*/
-#define		NY				32		/**< Y Dimension in real space. Must be multiples of NPROC when using MPI.*/
+#define		NX				16			/**< X Dimension in real space. Must be multiples of NPROC when using MPI.*/
+#define		NY				16		/**< Y Dimension in real space. Must be multiples of NPROC when using MPI.*/
 #define		NZ				16			/**< Z Dimension in real space. */
 
 #define		MHD						/**< Uncomment to activate MHD*/
@@ -34,8 +34,8 @@
 //#define		TIME_DEPENDANT_SHEAR			/**< Enable Time dependant shear */
 
 //#define		FORCING					/**< Uncomment to use internal forcing of the velocity field (see forcing in timestep.c) */
-//#define 		IMPLICIT_ABC_FORCING
-#define 		KINEMATIC_REGIME			// Disable effects of Lorentz force 
+#define 		IMPLICIT_ABC_FORCING
+//#define 		KINEMATIC_REGIME			// Disable effects of Lorentz force 
 #define			WITH_EXPLICIT_DISSIPATION
 #define 		KINEMATIC_GROWTH
 #define		FFT_PLANNING	FFTW_MEASURE  /**< can be either FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT or FFTW_EXHAUSTIVE (see fftw3 doc). Measure leads to longer initialisation of fft routines */
