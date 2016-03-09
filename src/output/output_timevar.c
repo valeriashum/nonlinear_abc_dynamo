@@ -165,7 +165,7 @@ void output_timevar(const struct Field fldi,
 			for( k = 0; k < NZ_COMPLEX; k++) {
 			    w16[IDX3D] = pow( pow(fabs(fldi.bx[IDX3D]),2) + pow(fabs(fldi.by[IDX3D]),2) + pow(fabs(fldi.bz[IDX3D]),2)  , 0.5); 
                 
-                //if(isfinite(wr17[IDX3D])==1){
+                //if(finitef(wr17[IDX3D])==1){
                   
 //                }
 
@@ -510,7 +510,8 @@ void output_timevar(const struct Field fldi,
             //MPI_Printf("From o_timevar.c: t=%f, after energy=%e\n", t, output_var );
             em_curr = output_var;
             
-            if (isfinite(em_curr)==0){
+            //if (finitef(em_curr)==0){
+		if ( finitef(em_curr)==0){
                     MPI_Printf("Terminated due to error in EM.\n");
                     if(rank==0) {
 		            	fprintf(ht,"%08e\n",output_var);
@@ -529,17 +530,17 @@ void output_timevar(const struct Field fldi,
                 // growth rate of energy 
                 output_var= (log (em_curr/em_prev))/(2*param.toutput_time);
                 em_prev = em_curr;
-                if (isfinite(em_gr)==1 && isfinite(output_var)==1 && fabs((em_gr - output_var)/output_var) < 5e-4 ){
+                if (finitef(em_gr)==1 && finitef(output_var)==1 && fabs((em_gr - output_var)/output_var) < 5e-4 ){
                     param.toutput_time = 2.0;
                     threshold = 1e-6;  
                 }
-                if (isfinite(em_gr)==1 && isfinite(output_var)==1 && fabs((em_gr - output_var)/output_var) > 5e-4 ){
+                if (finitef(em_gr)==1 && finitef(output_var)==1 && fabs((em_gr - output_var)/output_var) > 5e-4 ){
                     threshold = 1e-4 ; 
                 }
 
                 //MPI_Printf("em_gr_prev=%e, em_gr=%e, dif=%e\n", em_gr,output_var,fabs((em_gr - output_var)/output_var)) ;
                 // find the saturated growth rate
-                if (isfinite(em_gr)==1 && isfinite(output_var)==1 && fabs((em_gr - output_var)/output_var) < threshold ){
+                if (finitef(em_gr)==1 && finitef(output_var)==1 && fabs((em_gr - output_var)/output_var) < threshold ){
                     MPI_Printf("Terminated due to saturated growth rate.Error=%e\n", fabs((em_gr - output_var)/output_var));
                     if(rank==0) {
 		            	fprintf(ht,"%08e\n",output_var);
@@ -913,7 +914,7 @@ void output_rate(const struct Field fldi,
                 for( j = 0; j < NY_COMPLEX; j++) {
                     for( k = 0; k < NZ_COMPLEX; k++) {
                         w16[i] = pow( pow(fabs(fldi.bx[IDX3D]),2) + pow(fabs(fldi.by[IDX3D]),2) + pow(fabs(fldi.bz[IDX3D]),2)  , 0.5);
-                        if(isfinite(creal(w17[IDX3D]))==1 && creal(w17[IDX3D])>0.0){
+                        if(finitef(creal(w17[IDX3D]))==1 && creal(w17[IDX3D])>0.0){
                             fprintf(ht, "%f\t%f\t%f\t%f\t%e\t%e\n",kx[IDX3D],ky[IDX3D],kz[IDX3D],t,creal(w16[IDX3D]), creal(w17[IDX3D]));
                             if(ferror(ht)) ERROR_HANDLER( ERROR_CRITICAL, "Error writing rate file");
                         }        
