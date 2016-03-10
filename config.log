@@ -356,7 +356,7 @@ configure:4675: gcc -o conftest -O3 -fomit-frame-pointer -malign-double -fstrict
 configure:4678: $? = 0
 configure:4684: ./conftest
 configure:4687: $? = 0
-configure:4703: result: 306a9:2100800:7fbae3ff:bfebfbff
+configure:4703: result: 306a9:4100800:7fbae3ff:bfebfbff
 configure:4949: checking whether C compiler accepts -march=pentium2
 configure:4974: gcc -c -march=pentium2  conftest.c >&5
 conftest.c:1:0: error: CPU you selected does not support x86-64 instruction set
@@ -694,7 +694,7 @@ ax_cv_c_flags__mpentium2=no
 ax_cv_c_flags__mpentiumpro=no
 ax_cv_gcc_archflag=unknown
 ax_cv_gcc_x86_cpuid_0=d:756e6547:6c65746e:49656e69
-ax_cv_gcc_x86_cpuid_1=306a9:2100800:7fbae3ff:bfebfbff
+ax_cv_gcc_x86_cpuid_1=306a9:4100800:7fbae3ff:bfebfbff
 
 ## ----------------- ##
 ## Output variables. ##
