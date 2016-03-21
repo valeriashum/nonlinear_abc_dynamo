@@ -151,6 +151,7 @@ void output_timevar(const struct Field fldi,
         w9[i] = pow(pow(fabs(fldi.bx[i]),2) + pow(fabs(fldi.by[i]),2) + pow(fabs(fldi.bz[i]),2) , 0.5);
 #endif
 	}
+#ifdef MHD
     if(param.output_magnetic_field && t>0. ) {
 		// Compute the magnetic field B = sqrt BxBx* + ByBy* + BzBz*
        
@@ -244,6 +245,7 @@ void output_timevar(const struct Field fldi,
         }*/
 
  }
+#endif
 	/***********************************************************/
 	/** 
 		 Magnitude of the overlap integral of u with the ABC flow for A=B=C=1
@@ -511,7 +513,7 @@ void output_timevar(const struct Field fldi,
             em_curr = output_var;
             
             //if (finitef(em_curr)==0){
-		if ( finitef(em_curr)==0){
+		    if ( finitef(em_curr)==0){
                     MPI_Printf("Terminated due to error in EM.\n");
                     if(rank==0) {
 		            	fprintf(ht,"%08e\n",output_var);
@@ -904,7 +906,7 @@ void output_rate(const struct Field fldi,
     char  filename[50];
        
 	DEBUG_START_FUNC;
-
+#ifdef MHD
     //Print each rank to a different file 
     for(rank_i=0; rank_i < NPROC; rank_i++){
         if(rank==rank_i) {
@@ -924,6 +926,7 @@ void output_rate(const struct Field fldi,
             fclose(ht); 
         }
     }
+#endif
 } 
 /**************************************************************************************/
 /** 
@@ -936,7 +939,7 @@ void init_rate(){
     int i;
     char  filename[50];
 	DEBUG_START_FUNC;
-
+#ifdef MHD
     for (i=0; i<NPROC; i++){
 	    if(rank==i) {
             sprintf(filename,"rates_r%02i.txt",i);
@@ -949,6 +952,7 @@ void init_rate(){
    
 	DEBUG_END_FUNC;
 	return;
+#endif
 }
 
 /**************************************************************************************/

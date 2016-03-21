@@ -5,7 +5,6 @@
 #include "../shear.h"
 #include "../debug.h"
 #include "../particles.h"
-#include <stdio.h>
 
 #ifdef WITH_SHEAR
 
@@ -197,10 +196,9 @@ void output_vtk(struct Field fldi, const int n, double t) {
 	FILE *ht = NULL;
 	char  filename[50];
 	int num_remain_field;
-	int array_size, i,j,k;
-    	
+	int array_size, i;
+	
 	DEBUG_START_FUNC;
-    
 
 	sprintf(filename,"data/v%04i.vtk",n);
 #ifdef BOUNDARY_C
@@ -235,7 +233,6 @@ void output_vtk(struct Field fldi, const int n, double t) {
 		
 	if(param.output_vorticity)
 		num_remain_field +=3;
- 
 		
 #ifndef MPI_SUPPORT
 #ifdef WITH_PARTICLES
@@ -246,29 +243,12 @@ void output_vtk(struct Field fldi, const int n, double t) {
 	if(rank==0) fprintf(ht, "FIELD FieldData %d\n",num_remain_field);
 	
 	// Write all the remaining fields
-	// MPI_Printf("From o_vtk.c 249: t=%f\n",t); 
-    // check initial condition non-zero cells
-/*	for( i = 0; i < NX_COMPLEX/NPROC; i++) {
-		for( j = 0; j < NY_COMPLEX; j++) {
-			for( k = 0; k < NZ_COMPLEX; k++) {
-				if (fldi.bx[IDX3D]  != 0.0) {
-	MPI_Printf("From timestep 163.c: t=%f, for kx =%f, ky=%f, kz=%f, bx= %e+ i%e\n",t, kx[IDX3D],ky[IDX3D],kz[IDX3D], creal(fldi.bx[IDX3D]), cimag(fldi.bx[IDX3D]));
-                }
-                if (fldi.by[IDX3D]  != 0.0) {
-	MPI_Printf("From timestep 163.c: t=%f, for kx =%f, ky=%f, kz=%f, by= %e+ i%e\n",t, kx[IDX3D],ky[IDX3D],kz[IDX3D], creal(fldi.by[IDX3D]), cimag(fldi.by[IDX3D]));
-                }
-                if (fldi.bz[IDX3D]  != 0.0) {
-	MPI_Printf("From timestep 163.c: t=%f, for kx =%f, ky=%f, kz=%f, bz= %e+ i%e\n",t, kx[IDX3D],ky[IDX3D],kz[IDX3D], creal(fldi.bz[IDX3D]), cimag(fldi.bz[IDX3D]));
-                }
-			}
-		}
-	}*/
+	
 	for(i = 1 ; i < fldi.nfield ; i++) {
 		if(rank==0) fprintf(ht, "%s 1 %d float\n",fldi.fname[i],array_size);
 		write_vtk(ht,fldi.farray[i],t);
 	}
-
-   
+	
 	if(param.output_vorticity) {
 		// Compute the vorticity field
 		for( i = 0 ; i < NTOTAL_COMPLEX ; i++) {
@@ -283,10 +263,6 @@ void output_vtk(struct Field fldi, const int n, double t) {
 		if(rank==0) fprintf(ht, "wz 1 %d float\n",array_size);
 		write_vtk(ht,w6,t);
 	}
-
-       
-     
-       
 		
 #ifndef MPI_SUPPORT
 #ifdef WITH_PARTICLES
