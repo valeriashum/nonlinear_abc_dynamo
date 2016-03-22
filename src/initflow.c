@@ -658,7 +658,7 @@ void init_modified_ABC_flow(struct Field fldi){
                         param.modified_ABC_flow_A*param.modified_ABC_flow_kz*sin(z[i] /(double) param.modified_ABC_flow_kz ) +
                         param.modified_ABC_flow_C*param.modified_ABC_flow_ky*cos(y[i] /(double) param.modified_ABC_flow_ky)
                     ) + 
-                    sin(x[i]/param.modified_ABC_flow_m)*param.modified_ABC_flow_m*(
+                    sin(x[i]/param.modified_ABC_flow_m)/param.modified_ABC_flow_m*(
                         0
                     )                                         
                 ); 
@@ -667,7 +667,7 @@ void init_modified_ABC_flow(struct Field fldi){
                         param.modified_ABC_flow_B*param.modified_ABC_flow_kx*sin(x[i] /(double) param.modified_ABC_flow_kx ) +
                         param.modified_ABC_flow_A*param.modified_ABC_flow_kz*cos(z[i] /(double) param.modified_ABC_flow_kz)
                     ) + 
-                    sin(x[i]/param.modified_ABC_flow_m)*param.modified_ABC_flow_m*(
+                    sin(x[i]/param.modified_ABC_flow_m)/param.modified_ABC_flow_m*(
                         param.modified_ABC_flow_B*cos(x[i] /(double) param.modified_ABC_flow_kx) + 
                         param.modified_ABC_flow_C*sin(y[i] /(double) param.modified_ABC_flow_ky)
                     )                                         
@@ -677,7 +677,7 @@ void init_modified_ABC_flow(struct Field fldi){
                         param.modified_ABC_flow_C*param.modified_ABC_flow_ky*sin(y[i] /(double) param.modified_ABC_flow_ky ) +
                         param.modified_ABC_flow_B*param.modified_ABC_flow_kx*cos(x[i] /(double) param.modified_ABC_flow_kx)
                     ) + 
-                    sin(x[i]/param.modified_ABC_flow_m)*param.modified_ABC_flow_m*(
+                    sin(x[i]/param.modified_ABC_flow_m)/param.modified_ABC_flow_m*(
                         -param.modified_ABC_flow_A*cos(z[i] /(double) param.modified_ABC_flow_kz) + 
                         -param.modified_ABC_flow_B*sin(x[i] /(double) param.modified_ABC_flow_kx)
                     )                                         
