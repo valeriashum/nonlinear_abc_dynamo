@@ -111,7 +111,7 @@ void forcing(struct Field fldi,
 #ifdef U_III_FORCING
 
 void u_iii_forcing(struct Field fldi, double dt) {
-			 	
+	double *x, *y, *z;		 	
 	int i,j,k;
 
 	x = (double *) fftw_malloc( sizeof(double complex) * NTOTAL_COMPLEX);

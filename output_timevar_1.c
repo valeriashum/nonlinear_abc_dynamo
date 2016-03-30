@@ -502,14 +502,7 @@ void output_timevar(const struct Field fldi,
 			reduce(&output_var,1);
 		}
 
-		else if(!strcmp(param.timevar_vars.name[i],"Rm")) {
-                        // current R_m
-                        output_var=param.reynolds_m;
-                }		
-		else if(!strcmp(param.timevar_vars.name[i],"Re")) {
-                        // current R_e
-                        output_var=param.reynolds;
-                }
+		
 
 #ifdef MHD
 		else if(!strcmp(param.timevar_vars.name[i],"em")) {
@@ -570,10 +563,10 @@ void output_timevar(const struct Field fldi,
                 em_gr = output_var;
                
         }
-
-
-
-
+        else if(!strcmp(param.timevar_vars.name[i],"Rm")) {
+			// current R_m
+			output_var=param.reynolds_m;
+		}
 		else if(!strcmp(param.timevar_vars.name[i],"bxmax")) {
 			// maximum of bx component
 			output_var=find_max(wr5);

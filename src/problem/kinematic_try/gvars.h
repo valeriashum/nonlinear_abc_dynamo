@@ -19,11 +19,11 @@
 #ifndef _GVARS_
 #define _GVARS_
 
-#define		NX				160			/**< X Dimension in real space. Must be multiples of NPROC when using MPI.*/
-#define		NY				32		/**< Y Dimension in real space. Must be multiples of NPROC when using MPI.*/
-#define		NZ				16			/**< Z Dimension in real space. */
+#define		NX				320			/**< X Dimension in real space. Must be multiples of NPROC when using MPI.*/
+#define		NY				64		/**< Y Dimension in real space. Must be multiples of NPROC when using MPI.*/
+#define		NZ				32			/**< Z Dimension in real space. */
 
-//#define		MHD						/**< Uncomment to activate MHD*/
+#define		MHD						/**< Uncomment to activate MHD*/
 
 //#define		BOUSSINESQ				/**< Uncomment to activate Boussinesq */
 //#define		VERTSTRAT				/**< Vertical stratification. Otherwise, Boussinesq stratification is in X */
@@ -35,10 +35,9 @@
 
 //#define		FORCING					/**< Uncomment to use internal forcing of the velocity field (see forcing in timestep.c) */
 //#define 		IMPLICIT_ABC_FORCING
-//#define 		KINEMATIC_REGIME			// Disable effects of Lorentz force          
-//#define		WITH_EXPLICIT_DISSIPATION
-//#define 		KINEMATIC_GROWTH
-#define 		U_III_FORCING
+#define 		KINEMATIC_REGIME			// Disable effects of Lorentz force 
+#define			WITH_EXPLICIT_DISSIPATION
+#define 		KINEMATIC_GROWTH
 #define		FFT_PLANNING	FFTW_MEASURE  /**< can be either FFTW_ESTIMATE, FFTW_MEASURE, FFTW_PATIENT or FFTW_EXHAUSTIVE (see fftw3 doc). Measure leads to longer initialisation of fft routines */
 
 

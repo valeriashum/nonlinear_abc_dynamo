@@ -11,7 +11,7 @@
 OPENMP= notconfigured
 MPI= yes
 FFTW3_MPI= notconfigured
-DEBUG= yes
+DEBUG= no
 
 ###########################################
 ## Configuration found by ./configure    ##
