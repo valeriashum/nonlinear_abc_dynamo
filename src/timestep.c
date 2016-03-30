@@ -801,6 +801,10 @@ void implicitstep(
 	ABC_forcing(fldi, dt);
 #endif
 
+#ifdef U_III_FORCING
+	u_iii_forcing(fldi, dt);
+#endif
+
 #ifdef IMPLICIT_ABC_FORCING
 	implicit_ABC_forcing(fldi, dt);
 #endif

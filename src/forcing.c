@@ -106,6 +106,122 @@ void forcing(struct Field fldi,
 #endif
 
 /*****************************************************
+********* U_III Forcing ******************************
+******************************************************/
+#ifdef U_III_FORCING
+
+void u_iii_forcing(struct Field fldi, double dt) {
+			 	
+	int i,j,k;
+
+	x = (double *) fftw_malloc( sizeof(double complex) * NTOTAL_COMPLEX);
+	if (x == NULL) ERROR_HANDLER( ERROR_CRITICAL, "No memory for x allocation");
+	
+	y = (double *) fftw_malloc( sizeof(double complex) * NTOTAL_COMPLEX);
+	if (y == NULL) ERROR_HANDLER( ERROR_CRITICAL, "No memory for y allocation");
+	
+	z = (double *) fftw_malloc( sizeof(double complex) * NTOTAL_COMPLEX);
+	if (z == NULL) ERROR_HANDLER( ERROR_CRITICAL, "No memory for z allocation");
+
+	// Initialize the arrays
+	
+	for(i = 0 ; i < NX/NPROC ; i++) {
+		for(j = 0 ; j < NY ; j++) {
+			for(k = 0 ; k < NZ ; k++) {
+				x[k + (NZ + 2) * j + (NZ + 2) * NY * i] = - param.lx / 2 + (param.lx * (i + rank * NX / NPROC)) / NX;
+				y[k + (NZ + 2) * j + (NZ + 2) * NY * i] = - param.ly / 2 + (param.ly * j ) / NY;
+				z[k + (NZ + 2) * j + (NZ + 2) * NY * i] = - param.lz / 2 + (param.lz * k ) / NZ;
+			}
+		}
+	}
+	
+	// Initialize the extra points (k=NZ and k=NZ+1) to zero to prevent stupid things from happening...
+	for(i = 0 ; i < NX/NPROC ; i++) {
+		for(j = 0 ; j < NY ; j++) {
+			for(k = NZ ; k < NZ + 2 ; k++) {
+				x[k + (NZ + 2) * j + (NZ + 2) * NY * i] = 0.0;
+				y[k + (NZ + 2) * j + (NZ + 2) * NY * i] = 0.0;
+				z[k + (NZ + 2) * j + (NZ + 2) * NY * i] = 0.0;
+
+			}
+		}
+	}
+	
+	// Init work array to zero
+	for(i = 0 ; i < NX/NPROC ; i++) {
+		for(j = 0 ; j < NY ; j++) {
+			for(k = 0 ; k < NZ + 2 ; k++) {
+				wr4[k + (NZ + 2) * j + (NZ + 2) * NY * i] = 0.0;
+				wr5[k + (NZ + 2) * j + (NZ + 2) * NY * i] = 0.0;
+				wr6[k + (NZ + 2) * j + (NZ + 2) * NY * i] = 0.0;
+   			}
+		}
+   }
+
+    /*******************************************************************
+	** This part can be modified              **************************
+	********************************************************************/
+	
+	// The velocity field vx,vy,vz is stored in wr1,wr2,wr3
+   	for(i = 0 ; i < 2*NTOTAL_COMPLEX ; i++) {
+     
+        wr4[i] = param.modified_ABC_flow_D*(
+                    cos(x[i]/param.modified_ABC_flow_m)*(
+                        param.modified_ABC_flow_A*param.modified_ABC_flow_kz*sin(z[i] /(double) param.modified_ABC_flow_kz ) +
+                        param.modified_ABC_flow_C*param.modified_ABC_flow_ky*cos(y[i] /(double) param.modified_ABC_flow_ky)
+                    ) + 
+                    sin(x[i]/param.modified_ABC_flow_m)/param.modified_ABC_flow_m*(
+                        0
+                    )                                         
+                ); 
+        wr5[i] = param.modified_ABC_flow_D*(
+                    cos(x[i]/param.modified_ABC_flow_m)*(
+                        param.modified_ABC_flow_B*param.modified_ABC_flow_kx*sin(x[i] /(double) param.modified_ABC_flow_kx ) +
+                        param.modified_ABC_flow_A*param.modified_ABC_flow_kz*cos(z[i] /(double) param.modified_ABC_flow_kz)
+                    ) + 
+                    sin(x[i]/param.modified_ABC_flow_m)/param.modified_ABC_flow_m*(
+                        param.modified_ABC_flow_B*cos(x[i] /(double) param.modified_ABC_flow_kx) + 
+                        param.modified_ABC_flow_C*sin(y[i] /(double) param.modified_ABC_flow_ky)
+                    )                                         
+                );
+        wr6[i] = param.modified_ABC_flow_D*(
+                    cos(x[i]/param.modified_ABC_flow_m)*(
+                        param.modified_ABC_flow_C*param.modified_ABC_flow_ky*sin(y[i] /(double) param.modified_ABC_flow_ky ) +
+                        param.modified_ABC_flow_B*param.modified_ABC_flow_kx*cos(x[i] /(double) param.modified_ABC_flow_kx)
+                    ) + 
+                    sin(x[i]/param.modified_ABC_flow_m)/param.modified_ABC_flow_m*(
+                        -param.modified_ABC_flow_A*cos(z[i] /(double) param.modified_ABC_flow_kz) + 
+                        -param.modified_ABC_flow_B*sin(x[i] /(double) param.modified_ABC_flow_kx)
+                    )                                         
+                );
+    }
+    gfft_r2c(wr4);
+	gfft_r2c(wr5);
+    gfft_r2c(wr6);
+	
+    for(i = 0 ; i < NTOTAL_COMPLEX ; i++) {
+		w4[i] = w4[i] * mask[i];
+		w5[i] = w5[i] * mask[i];
+		w6[i] = w6[i] * mask[i];
+    }   
+
+	for( i = 0; i < NX_COMPLEX/NPROC; i++) {
+		for( j = 0; j < NY_COMPLEX; j++) {
+			for( k = 0; k < NZ_COMPLEX; k++) {
+				fldi.vx[ IDX3D ] += nu * k2t[IDX3D] * w4[ IDX3D ] ;
+				fldi.vy[ IDX3D ] += nu * k2t[IDX3D] * w5[ IDX3D ] ;
+				fldi.vz[ IDX3D ] += nu * k2t[IDX3D] * w6[ IDX3D ] ;
+			}
+		}
+	}
+
+	projector(fldi.vx,fldi.vy,fldi.vz);	
+	return;
+}
+
+#endif
+
+/*****************************************************
 ** ABC FLOW forcing                       ************
 ** (Thanks to E. Rempel)                  ************
 ******************************************************/
