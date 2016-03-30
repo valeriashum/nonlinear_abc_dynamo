@@ -691,9 +691,9 @@ void init_modified_ABC_flow(struct Field fldi){
     gfft_r2c(wr3);
 	
     for(i = 0 ; i < NTOTAL_COMPLEX ; i++) {
-		fldi.vx[i] = w1[i] * mask[i];
-		fldi.vy[i] = w2[i] * mask[i];
-		fldi.vz[i] = w3[i] * mask[i];
+		fldi.vx[i] += w1[i] * mask[i];
+		fldi.vy[i] += w2[i] * mask[i];
+		fldi.vz[i] += w3[i] * mask[i];
     }   
 
     for(i = 0 ; i < NTOTAL_COMPLEX ; i++) {
