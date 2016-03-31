@@ -215,6 +215,48 @@ void u_iii_forcing(struct Field fldi, double dt) {
 		}
 	}
 
+#ifdef U_III_FORCING_EXTRA
+    gfft_c2r_t(w4);
+	gfft_c2r_t(w5);
+	gfft_c2r_t(w6);
+
+#ifdef _OPENMP
+	#pragma omp parallel for private(i) schedule(static)	
+#endif
+	for( i = 0 ; i < 2*NTOTAL_COMPLEX ; i++) {
+		wr10[i] = wr4[i] * wr4[i] / ((double) NTOTAL*NTOTAL);
+		wr11[i] = wr5[i] * wr5[i] / ((double) NTOTAL*NTOTAL);
+#ifndef WITH_2D
+		wr12[i] = wr6[i] * wr6[i] / ((double) NTOTAL*NTOTAL);
+#endif
+		wr7[i] = wr4[i] * wr5[i] / ((double) NTOTAL*NTOTAL);
+		wr8[i] = wr4[i] * wr6[i] / ((double) NTOTAL*NTOTAL);
+		wr9[i] = wr5[i] * wr6[i] / ((double) NTOTAL*NTOTAL);
+	}
+	
+	gfft_r2c_t(wr10);
+	gfft_r2c_t(wr11);
+#ifndef WITH_2D
+	gfft_r2c_t(wr12);
+#endif
+	gfft_r2c_t(wr7);
+	gfft_r2c_t(wr8);
+	gfft_r2c_t(wr9);
+
+#ifdef _OPENMP
+	#pragma omp parallel for private(i) schedule(static)	
+#endif
+	for( i = 0 ; i < NTOTAL_COMPLEX ; i++) {
+		fldi.vx[i] +=  I * mask[i] * (
+					kxt[i] * w10[i] + ky[i] * w7[i] + kz[i] * w8[i] );
+		fldi.vy[i] +=  I * mask[i] * (
+					kxt[i] * w7[i] + ky[i] * w11[i] + kz[i] * w9[i] );
+		fldi.vz[i] +=  I * mask[i] * (
+					kxt[i] * w8[i] + ky[i] * w9[i] + kz[i] * w12[i] );	// since kz=0 in 2D, kz*w6 gives 0, even if w6 is some random array
+	}
+
+#endif
+
 	projector(fldi.vx,fldi.vy,fldi.vz);	
 	return;
 }

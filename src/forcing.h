@@ -21,3 +21,4 @@ void forcing(struct Field fldi,
 
 void ABC_forcing(struct Field fldi, double dt);
 void implicit_ABC_forcing(struct Field fldi, double dt);
+void u_iii_forcing(struct Field fldi, double dt);

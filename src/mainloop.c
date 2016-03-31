@@ -417,7 +417,7 @@ void mainloop(double t_start, double t_end) {
 #ifdef KINEMATIC_GROWTH
         // Retain the original magnetic field so we can compute growth rate
 		// at the end of the timestep
-        if ((int) t%((int)(param.toutput_time-param.toutput_time/2))==0) {
+        if ((int) t%((int)(param.toutput_time/2 + 0.5))==0) {
             t_saved = t;
         	for (i=0; i < NTOTAL_COMPLEX; i++){
 		    	fld.bx0[i] = fld.bx[i];
