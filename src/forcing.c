@@ -208,9 +208,9 @@ void u_iii_forcing(struct Field fldi, double dt) {
 	for( i = 0; i < NX_COMPLEX/NPROC; i++) {
 		for( j = 0; j < NY_COMPLEX; j++) {
 			for( k = 0; k < NZ_COMPLEX; k++) {
-				fldi.vx[ IDX3D ] += nu * k2t[IDX3D] * w4[ IDX3D ] ;
-				fldi.vy[ IDX3D ] += nu * k2t[IDX3D] * w5[ IDX3D ] ;
-				fldi.vz[ IDX3D ] += nu * k2t[IDX3D] * w6[ IDX3D ] ;
+				fldi.vx[ IDX3D ] +=  w4[ IDX3D ] * (1 - exp(-nu*k2t[IDX3D]*dt)) ;
+				fldi.vy[ IDX3D ] +=  w5[ IDX3D ] * (1 - exp(-nu*k2t[IDX3D]*dt)) ;
+				fldi.vz[ IDX3D ] +=  w6[ IDX3D ] * (1 - exp(-nu*k2t[IDX3D]*dt)) ;
 			}
 		}
 	}
@@ -247,11 +247,11 @@ void u_iii_forcing(struct Field fldi, double dt) {
 	#pragma omp parallel for private(i) schedule(static)	
 #endif
 	for( i = 0 ; i < NTOTAL_COMPLEX ; i++) {
-		fldi.vx[i] +=  I * mask[i] * (
+		fldi.vx[i] +=  I * mask[i] / (nu * k2t) * (1 - exp(-nu*k2t[IDX3D]*dt)) * (
 					kxt[i] * w10[i] + ky[i] * w7[i] + kz[i] * w8[i] );
-		fldi.vy[i] +=  I * mask[i] * (
+		fldi.vy[i] +=  I * mask[i] / (nu * k2t) * (1 - exp(-nu*k2t[IDX3D]*dt)) * (
 					kxt[i] * w7[i] + ky[i] * w11[i] + kz[i] * w9[i] );
-		fldi.vz[i] +=  I * mask[i] * (
+		fldi.vz[i] +=  I * mask[i] / (nu * k2t) * (1 - exp(-nu*k2t[IDX3D]*dt)) * (
 					kxt[i] * w8[i] + ky[i] * w9[i] + kz[i] * w12[i] );	// since kz=0 in 2D, kz*w6 gives 0, even if w6 is some random array
 	}
 
